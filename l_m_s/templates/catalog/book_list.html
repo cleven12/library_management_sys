@@ -1,0 +1,49 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1 class="mb-4">Book List</h1>
+
+{% if book_list %}
+<div class="row">
+  {% for book in book_list %}
+  <div class="col-md-6 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+        </h5>
+        <p class="card-text">
+          <strong>Author:</strong> {{ book.display_author }}<br>
+          <strong>Genre:</strong> {{ book.display_genre }}<br>
+          <strong>ISBN:</strong> {{ book.isbn }}
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav>
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+    
+    <li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+    
+    {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="alert alert-warning">
+  <i class="bi bi-exclamation-triangle"></i> There are no books in the library.
+</div>
+{% endif %}
+{% endblock %}

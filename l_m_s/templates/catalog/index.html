@@ -1,0 +1,60 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="mb-4">Library Home</h1>
+    <p>Welcome to the Library Management System - Your gateway to managing library resources efficiently!</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-primary">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-book-fill"></i> Books</h5>
+        <p class="card-text display-4">{{ num_books }}</p>
+        <p class="card-text">Total books in catalog</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-check-circle"></i> Available</h5>
+        <p class="card-text display-4">{{ num_instances_available }}</p>
+        <p class="card-text">Copies available</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-info">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-files"></i> Copies</h5>
+        <p class="card-text display-4">{{ num_instances }}</p>
+        <p class="card-text">Total book copies</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-warning">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-person"></i> Authors</h5>
+        <p class="card-text display-4">{{ num_authors }}</p>
+        <p class="card-text">Authors in catalog</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle"></i> You have visited this page {{ num_visits }} time{{ num_visits|pluralize }}.
+    </div>
+  </div>
+</div>
+{% endblock %}

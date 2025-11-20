@@ -1,0 +1,81 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1 class="mb-4">Circulation Statistics</h1>
+
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card bg-light">
+      <div class="card-body">
+        <h5 class="card-title">Last 7 Days</h5>
+        <p class="card-text display-4">{{ loans_last_7_days }}</p>
+        <p class="text-muted">New loans</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card bg-light">
+      <div class="card-body">
+        <h5 class="card-title">Last 30 Days</h5>
+        <p class="card-text display-4">{{ loans_last_30_days }}</p>
+        <p class="text-muted">New loans</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card bg-light">
+      <div class="card-body">
+        <h5 class="card-title">Last 30 Days</h5>
+        <p class="card-text display-4">{{ returns_last_30_days }}</p>
+        <p class="text-muted">Books returned</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-danger text-white">
+    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Overdue Items ({{ overdue_items.count }})</h5>
+  </div>
+  <div class="card-body">
+    {% if overdue_items %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Borrower</th>
+            <th>Due Date</th>
+            <th>Days Overdue</th>
+            <th>Fine</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loan in overdue_items %}
+          <tr>
+            <td><a href="{{ loan.book_instance.book.get_absolute_url }}">{{ loan.book_instance.book.title }}</a></td>
+            <td>{{ loan.borrower.username }}</td>
+            <td>{{ loan.due_date }}</td>
+            <td><span class="badge bg-danger">{{ loan.days_overdue }} days</span></td>
+            <td>${{ loan.fine_amount|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-success">
+      <i class="bi bi-check-circle"></i> No overdue items! All books are returned on time.
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="{% url 'reports-dashboard' %}" class="btn btn-secondary">
+    <i class="bi bi-arrow-left"></i> Back to Dashboard
+  </a>
+</div>
+{% endblock %}

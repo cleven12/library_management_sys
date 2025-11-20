@@ -1,0 +1,96 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1 class="mb-4">Library Reports Dashboard</h1>
+
+<div class="row">
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-primary">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-book"></i> Total Books</h5>
+        <p class="card-text display-4">{{ total_books }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-info">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-files"></i> Total Copies</h5>
+        <p class="card-text display-4">{{ total_copies }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-check-circle"></i> Available</h5>
+        <p class="card-text display-4">{{ available_copies }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-white bg-warning">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-clock"></i> On Loan</h5>
+        <p class="card-text display-4">{{ on_loan_copies }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-4 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Active Loans</h5>
+        <p class="card-text display-3">{{ active_loans }}</p>
+        <p class="text-muted">Currently borrowed</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4 mb-3">
+    <div class="card border-danger">
+      <div class="card-body">
+        <h5 class="card-title text-danger">Overdue Loans</h5>
+        <p class="card-text display-3 text-danger">{{ overdue_loans }}</p>
+        <p class="text-muted">Need attention</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4 mb-3">
+    <div class="card border-warning">
+      <div class="card-body">
+        <h5 class="card-title text-warning">Unpaid Fines</h5>
+        <p class="card-text display-3 text-warning">${{ total_fines|floatformat:2 }}</p>
+        <p class="text-muted">Outstanding amount</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5>Quick Links</h5>
+      </div>
+      <div class="card-body">
+        <a href="{% url 'most-borrowed' %}" class="btn btn-primary me-2">
+          <i class="bi bi-bar-chart"></i> Most Borrowed Books
+        </a>
+        <a href="{% url 'circulation-stats' %}" class="btn btn-info me-2">
+          <i class="bi bi-graph-up"></i> Circulation Statistics
+        </a>
+        <a href="{% url 'admin:index' %}" class="btn btn-secondary">
+          <i class="bi bi-gear"></i> Admin Panel
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1 class="mb-4">Most Borrowed Books</h1>
+
+<div class="card">
+  <div class="card-body">
+    {% if books %}
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Rank</th>
+            <th>Title</th>
+            <th>Author(s)</th>
+            <th>ISBN</th>
+            <th>Total Loans</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for book in books %}
+          <tr>
+            <td><strong>{{ forloop.counter }}</strong></td>
+            <td><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></td>
+            <td>{{ book.display_author }}</td>
+            <td>{{ book.isbn }}</td>
+            <td><span class="badge bg-primary">{{ book.loan_count }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle"></i> No loan data available yet. Start lending books to see statistics!
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="{% url 'reports-dashboard' %}" class="btn btn-secondary">
+    <i class="bi bi-arrow-left"></i> Back to Dashboard
+  </a>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>My Borrowed Books</h1>
+
+{% if loan_list %}
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Book</th>
+        <th>Borrowed</th>
+        <th>Due Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for loan in loan_list %}
+      <tr>
+        <td><a href="{{ loan.book_instance.book.get_absolute_url }}">{{ loan.book_instance.book.title }}</a></td>
+        <td>{{ loan.borrow_date }}</td>
+        <td>{{ loan.due_date }}</td>
+        <td>
+          {% if loan.is_overdue %}
+          <span class="badge bg-danger">Overdue</span>
+          {% else %}
+          <span class="badge bg-success">On Time</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-info">You have no books on loan.</div>
+{% endif %}
+{% endblock %}
