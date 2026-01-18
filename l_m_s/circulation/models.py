@@ -57,17 +57,41 @@ class Reservation(models.Model):
     
     book = models.ForeignKey('catalog.Book', on_delete=models.CASCADE)
     member = models.ForeignKey(MemberProfile, on_delete=models.CASCADE, related_name='reservations')
-    reservation_date = models.DateTimeField(auto_now_add=True)
+    reservation_date = models.DateTimeField(auto_now_add=True, db_index=True)
     expiry_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ACTIVE')
     position_in_queue = models.IntegerField(default=1)
     notified = models.BooleanField(default=False)
     
     class Meta:
-        ordering = ['reservation_date']
+        ordering = ['position_in_queue', 'reservation_date']
+        indexes = [
+            models.Index(fields=['book', 'status', 'position_in_queue']),
+        ]
         
     def __str__(self):
         return f"{self.book.title} - {self.member.user.username}"
+    
+    def update_queue_position(self):
+        active_reservations = Reservation.objects.filter(
+            book=self.book,
+            status='ACTIVE',
+            reservation_date__lt=self.reservation_date
+        ).count()
+        self.position_in_queue = active_reservations + 1
+        self.save()
+    
+    @classmethod
+    def reorder_queue(cls, book):
+        reservations = cls.objects.filter(
+            book=book,
+            status='ACTIVE'
+        ).order_by('reservation_date')
+        
+        for index, reservation in enumerate(reservations, start=1):
+            if reservation.position_in_queue != index:
+                reservation.position_in_queue = index
+                reservation.save()
 
 class Fine(models.Model):
     STATUS_CHOICES = [
