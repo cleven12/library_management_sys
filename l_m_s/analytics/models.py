@@ -1,24 +1,41 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 class BookPopularity(models.Model):
     book = models.OneToOneField('catalog.Book', on_delete=models.CASCADE, related_name='popularity')
-    total_loans = models.IntegerField(default=0)
+    total_loans = models.IntegerField(default=0, db_index=True)
     total_reservations = models.IntegerField(default=0)
     total_reviews = models.IntegerField(default=0)
-    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0, db_index=True)
     views_count = models.IntegerField(default=0)
-    last_borrowed = models.DateTimeField(null=True, blank=True)
-    popularity_score = models.FloatField(default=0.0)
-    trending_rank = models.IntegerField(null=True, blank=True)
+    last_borrowed = models.DateTimeField(null=True, blank=True, db_index=True)
+    popularity_score = models.FloatField(default=0.0, db_index=True)
+    trending_rank = models.IntegerField(null=True, blank=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         ordering = ['-popularity_score']
         verbose_name_plural = 'Book Popularities'
+        indexes = [
+            models.Index(fields=['-popularity_score', 'trending_rank']),
+            models.Index(fields=['total_loans', '-average_rating']),
+        ]
         
     def __str__(self):
         return f"{self.book.title} - Score: {self.popularity_score}"
+    
+    def recalculate_score(self):
+        loan_weight = 2.0
+        reservation_weight = 1.5
+        review_weight = 1.0
+        rating_weight = 10.0
+        
+        self.popularity_score = (
+            (self.total_loans * loan_weight) +
+            (self.total_reservations * reservation_weight) +
+            (self.total_reviews * review_weight) +
+            (float(self.average_rating) * rating_weight)
+        )
+        self.save()
 
 class MemberActivity(models.Model):
     member = models.OneToOneField('accounts.MemberProfile', on_delete=models.CASCADE, related_name='activity')
