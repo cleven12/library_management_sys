@@ -1,12 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Count, Avg
+from django.db.models import Q, Count, Avg, Prefetch
 from django.core.paginator import Paginator
+from django.core.cache import cache
 from .models import Book, BookInstance, Author, Genre, Review, ReadingList
 from analytics.models import SearchLog, BookPopularity
 
 def book_list(request):
-    books = Book.objects.all().select_related('publisher').prefetch_related('authors', 'genres')
+    cache_key = f"book_list_{request.GET.urlencode()}"
+    cached_data = cache.get(cache_key)
+    
+    if cached_data:
+        return render(request, 'catalog/book_list.html', cached_data)
+    
+    books = Book.objects.select_related('publisher').prefetch_related(
+        'authors', 
+        'genres',
+        Prefetch('instances', queryset=BookInstance.objects.filter(status='AVAILABLE'))
+    )
     
     search_query = request.GET.get('q', '')
     if search_query:
@@ -50,6 +61,9 @@ def book_list(request):
         'genres': Genre.objects.all(),
         'search_query': search_query,
     }
+    
+    cache.set(cache_key, context, 300)
+    
     return render(request, 'catalog/book_list.html', context)
 
 def book_detail(request, pk):
