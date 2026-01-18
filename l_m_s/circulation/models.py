@@ -100,6 +100,23 @@ class Fine(models.Model):
         
     def __str__(self):
         return f"{self.member.user.username} - ${self.amount} - {self.reason}"
+    
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.amount <= 0:
+            raise ValidationError('Fine amount must be greater than zero')
+        if self.status == 'PAID' and not self.paid_date:
+            raise ValidationError('Paid date is required when status is PAID')
+        if self.status == 'PAID' and not self.transaction_id:
+            raise ValidationError('Transaction ID is required for paid fines')
+    
+    def mark_as_paid(self, payment_method, transaction_id):
+        from django.utils import timezone
+        self.status = 'PAID'
+        self.paid_date = timezone.now()
+        self.payment_method = payment_method
+        self.transaction_id = transaction_id
+        self.save()
 
 class RenewalHistory(models.Model):
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name='renewal_history')
