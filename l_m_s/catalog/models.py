@@ -79,6 +79,28 @@ class Book(models.Model):
         
     def __str__(self):
         return self.title
+    
+    def get_availability_status(self):
+        total = self.instances.count()
+        available = self.instances.filter(status='AVAILABLE').count()
+        
+        if available == 0:
+            return 'unavailable'
+        elif available <= total * 0.3:
+            return 'limited'
+        else:
+            return 'available'
+    
+    def get_next_available_date(self):
+        from circulation.models import Loan
+        active_loans = Loan.objects.filter(
+            book_instance__book=self,
+            status='ACTIVE'
+        ).order_by('due_date').first()
+        
+        if active_loans:
+            return active_loans.due_date
+        return None
 
 class BookInstance(models.Model):
     STATUS_CHOICES = [
