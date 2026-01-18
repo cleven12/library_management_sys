@@ -36,12 +36,16 @@ class Loan(models.Model):
     def is_overdue(self):
         if self.status == 'RETURNED':
             return False
+        if self.return_date:
+            return False
         return timezone.now().date() > self.due_date
     
     def days_overdue(self):
         if not self.is_overdue():
             return 0
-        return (timezone.now().date() - self.due_date).days
+        today = timezone.now().date()
+        delta = (today - self.due_date).days
+        return max(0, delta)
 
 class Reservation(models.Model):
     STATUS_CHOICES = [
