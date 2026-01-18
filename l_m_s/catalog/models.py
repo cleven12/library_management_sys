@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from .validators import validate_isbn
 
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
@@ -55,7 +56,7 @@ class Book(models.Model):
     title = models.CharField(max_length=300, db_index=True)
     subtitle = models.CharField(max_length=300, blank=True)
     authors = models.ManyToManyField(Author, related_name='books')
-    isbn = models.CharField('ISBN', max_length=13, unique=True, db_index=True)
+    isbn = models.CharField('ISBN', max_length=13, unique=True, db_index=True, validators=[validate_isbn])
     publisher = models.ForeignKey(Publisher, on_delete=models.SET_NULL, null=True)
     publication_date = models.DateField()
     genres = models.ManyToManyField(Genre, related_name='books')
