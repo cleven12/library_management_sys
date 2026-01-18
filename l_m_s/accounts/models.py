@@ -44,6 +44,50 @@ class MemberProfile(models.Model):
     
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.member_id}"
+    
+    def get_active_loans_count(self):
+        from circulation.models import Loan
+        return Loan.objects.filter(
+            member=self,
+            status__in=['ACTIVE', 'OVERDUE']
+        ).count()
+    
+    def get_total_fines_pending(self):
+        from circulation.models import Fine
+        from django.db.models import Sum
+        total = Fine.objects.filter(
+            member=self,
+            status='PENDING'
+        ).aggregate(total=Sum('amount'))['total']
+        return total or 0
+    
+    def can_borrow_more(self):
+        return self.get_active_loans_count() < self.max_books_allowed
+    
+    def get_reading_streak(self):
+        from circulation.models import Loan
+        from datetime import timedelta
+        
+        loans = Loan.objects.filter(
+            member=self,
+            status='RETURNED'
+        ).order_by('-return_date')[:30]
+        
+        if not loans:
+            return 0
+        
+        streak = 1
+        current_date = loans[0].return_date.date()
+        
+        for loan in loans[1:]:
+            loan_date = loan.return_date.date()
+            if (current_date - loan_date).days <= 7:
+                streak += 1
+                current_date = loan_date
+            else:
+                break
+        
+        return streak
 
 class LibrarianProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='librarian_profile')
