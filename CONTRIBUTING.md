@@ -234,4 +234,4 @@ Contributors will be:
 - Join our discussions
 - Check existing documentation
 
-Thank you for contributing! 🎉
+Thank you for contributing!

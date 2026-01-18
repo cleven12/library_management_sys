@@ -2,7 +2,7 @@
 
 Web-based application for managing library resources including books, members, loans, and more.
 
-## 🚀 Features
+## Features
 
 ### Premium Features
 - **Advanced User Management**: Multi-tier membership system (Standard, Premium, VIP, Student)
@@ -26,7 +26,7 @@ Web-based application for managing library resources including books, members, l
 - Signal-based automation
 - Export functionality (CSV reports)
 
-## 📦 Installation
+## Installation
 
 ### Quick Setup
 ```bash
@@ -57,7 +57,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## 🎯 Usage
+## Usage
 
 ### Access Points
 - **Admin Panel**: http://localhost:8000/admin/
@@ -77,7 +77,7 @@ python manage.py process_overdue
 python manage.py update_analytics
 ```
 
-## 📊 Apps Structure
+## Apps Structure
 
 ### accounts
 User authentication, member profiles, librarian management, activity logging
@@ -97,7 +97,7 @@ Book popularity tracking, member activity, library statistics, search analytics
 ### reports
 Circulation reports, overdue tracking, revenue analysis, data exports
 
-## 🔧 Configuration
+## Configuration
 
 Key settings in `l_m_s/settings.py`:
 - Database configuration
@@ -105,21 +105,13 @@ Key settings in `l_m_s/settings.py`:
 - Static files configuration
 - Installed apps
 
-## 🧪 Testing
+## Testing
 
 ```bash
 python manage.py test
 ```
 
-## 📈 GitHub Achievements
-
-This project is designed to help you earn:
-- **Pair Extraordinaire**: Multiple substantial commits
-- **Pull Shark**: Significant codebase contributions
-- **Quickdraw**: Rapid issue resolution
-- **YOLO**: Direct commits to main branch
-
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create feature branch
@@ -127,11 +119,11 @@ This project is designed to help you earn:
 4. Push to branch
 5. Open Pull Request
 
-## 📄 License
+## License
 
 See LICENSE file for details.
 
-## 🌟 Premium Highlights
+## Premium Highlights
 
 - 6 Django apps with 20+ models
 - 50+ views and API endpoints
