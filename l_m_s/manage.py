@@ -20,3 +20,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+    import l_m_s.celery
