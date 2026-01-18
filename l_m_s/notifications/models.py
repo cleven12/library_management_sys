@@ -11,6 +11,8 @@ class Notification(models.Model):
         ('NEW_BOOK', 'New Book Added'),
         ('REMINDER', 'Reminder'),
         ('ANNOUNCEMENT', 'Announcement'),
+        ('BOOK_RETURNED', 'Book Returned'),
+        ('RENEWAL_SUCCESS', 'Renewal Successful'),
     ]
     
     STATUS_CHOICES = [
@@ -20,27 +22,47 @@ class Notification(models.Model):
         ('READ', 'Read'),
     ]
     
+    PRIORITY_CHOICES = [
+        (1, 'Low'),
+        (2, 'Normal'),
+        (3, 'High'),
+        (4, 'Urgent'),
+    ]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     notification_type = models.CharField(max_length=30, choices=NOTIFICATION_TYPES)
     title = models.CharField(max_length=200)
     message = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-    priority = models.IntegerField(default=1)
+    priority = models.IntegerField(choices=PRIORITY_CHOICES, default=2)
     sent_via_email = models.BooleanField(default=False)
     sent_via_sms = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     sent_at = models.DateTimeField(null=True, blank=True)
     read_at = models.DateTimeField(null=True, blank=True)
+    action_url = models.URLField(blank=True)
     
     class Meta:
         ordering = ['-created_at']
         indexes = [
             models.Index(fields=['user', 'status']),
             models.Index(fields=['notification_type']),
+            models.Index(fields=['priority', 'created_at']),
         ]
         
     def __str__(self):
         return f"{self.user.username} - {self.notification_type} - {self.title}"
+    
+    def mark_as_read(self):
+        if self.status != 'READ':
+            self.status = 'READ'
+            self.read_at = timezone.now()
+            self.save()
+            
+    def mark_as_sent(self):
+        self.status = 'SENT'
+        self.sent_at = timezone.now()
+        self.save()
 
 class NotificationPreference(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='notification_preference')
