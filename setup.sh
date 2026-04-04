@@ -13,8 +13,6 @@ source venv/bin/activate
 echo "Installing dependencies..."
 pip install -r requirements.txt
 
-cd l_m_s
-
 echo "Running migrations..."
 python manage.py makemigrations
 python manage.py migrate
